@@ -5,7 +5,7 @@ import pandas as pd
 def extract_normalized_vectors(df3_40):
     vech_keys = []
     vech_values = []
-    for k, r in bar(df3_40.iterrows()):
+    for k, r in df3_40.iterrows():
         vech = np.array(r)
         vech_normed = vech/np.linalg.norm(vech, ord=2)
         if np.any(np.isnan(vech_normed)):
@@ -18,7 +18,7 @@ def extract_normalized_vectors(df3_40):
 Call = namedtuple('Call',['hist','conf'])
 def map_tree_query(ind, dist, vech_keys, hist_map):
     called = {}
-    for (ind0, dist0, k) in bar(zip(ind, dist, vech_keys)):
+    for (ind0, dist0, k) in zip(ind, dist, vech_keys):
         if len(ind0)!=0:
             imin = np.argmin(dist0)
             called[k] = Call(hist_map[ind0[imin]], dist_to_cosing_score(dist0[imin]))
@@ -46,7 +46,6 @@ def dist_to_cosing_score(d):
 
 
 
-from frogress import bar
 from decimal import Decimal
 conf = 0.05
 CONF_RADIOS_THRESHOLD = cosine_score_to_dist(conf)
@@ -61,7 +60,7 @@ def genotype_stutter_histograms(df):
     print("mapping results")
     called = map_tree_query(ind, dist, vech_keys, hist_map)
     flat_called = dict()
-    for k, call_item in bar(called.items()):
+    for k, call_item in called.items():
         alleles_and_proportions = sorted(call_item.hist.alleles_to_proportions.items())
         if len(alleles_and_proportions) == 1:
             alleles_and_proportions = alleles_and_proportions+[(0, Decimal('0.0000'))]
